@@ -2,28 +2,43 @@ import { Link } from "react-router-dom";
 
 function Sidebar() {
   return (
-    <div
-      style={{
-        width: "220px",
-        height: "100vh",
-        backgroundColor: "#0b1d2d",
-        color: "white",
-        padding: "20px",
-        position: "fixed",
-        left: 0,
-        top: 0
-      }}
-    >
-      <h2>SurakshaVerse</h2>
+    <div style={sidebarStyle}>
+      <h2 style={{ color: "#00e5ff", marginBottom: "30px" }}>
+        SurakshaVerse
+      </h2>
 
-      <nav style={{ marginTop: "30px" }}>
-        <p><Link to="/dashboard">Dashboard</Link></p>
-        <p><Link to="/missions">Missions</Link></p>
-        <p><Link to="/simulation">Simulation</Link></p>
-        <p><Link to="/result">Results</Link></p>
+      <nav style={navStyle}>
+        <Link style={linkStyle} to="/home">Home</Link>
+        <Link style={linkStyle} to="/missions">Missions</Link>
+        <Link style={linkStyle} to="/dashboard">Threat Analysis</Link>
+        <Link style={linkStyle} to="/result">Results</Link>
       </nav>
     </div>
   );
 }
+
+const sidebarStyle = {
+  width: "240px",
+  height: "100vh",
+  position: "fixed",
+  top: 0,
+  left: 0,
+  padding: "30px 20px",
+  backgroundColor: "rgba(5, 11, 20, 0.9)",
+  backdropFilter: "blur(10px)",
+  boxSizing: "border-box",
+};
+
+const navStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "20px",
+};
+
+const linkStyle = {
+  color: "#c9d6e3",
+  textDecoration: "none",
+  fontSize: "16px",
+};
 
 export default Sidebar;

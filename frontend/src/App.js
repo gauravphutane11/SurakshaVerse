@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Splash from "./pages/Splash";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Missions from "./pages/Missions";
 import Simulation from "./pages/Simulation";
@@ -10,8 +10,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Splash />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/missions" element={<Missions />} />
         <Route path="/simulation" element={<Simulation />} />
