@@ -76,13 +76,6 @@ This project is a working prototype developed for academic and innovation exhibi
 
 ---
 
-## Team
-
-Computer Engineering Students  
-DIPEX 2026 Project
-
----
-
 ## License
 
 This project is for educational and demonstration purposes only.
