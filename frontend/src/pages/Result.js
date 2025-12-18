@@ -7,30 +7,32 @@ function Result() {
 
   const { mission, score, feedback } = location.state || {};
 
-  if (!mission) {
-    return (
-      <div style={{ padding: "50px" }}>
-        <h2>No result data found</h2>
-        <button onClick={() => navigate("/missions")}>
-          Go to Missions
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div>
       <Sidebar />
-      <div style={{ marginLeft: "240px", padding: "50px" }}>
-        <h1>Mission Result</h1>
-        <h2>{mission}</h2>
 
-        <h3>Score: {score}</h3>
-        <p>{feedback}</p>
+      <div style={{ marginLeft: "240px", padding: "50px", minHeight: "100vh" }}>
+        {!mission ? (
+          <>
+            <h2>No result data found</h2>
+            <p>Please complete a mission to view results.</p>
+            <button onClick={() => navigate("/missions")}>
+              Go to Missions
+            </button>
+          </>
+        ) : (
+          <>
+            <h1>Mission Result</h1>
+            <h2>{mission}</h2>
 
-        <button onClick={() => navigate("/missions")}>
-          Try Another Mission
-        </button>
+            <p><strong>Score:</strong> {score}</p>
+            <p>{feedback}</p>
+
+            <button onClick={() => navigate("/missions")}>
+              Try Another Mission
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
