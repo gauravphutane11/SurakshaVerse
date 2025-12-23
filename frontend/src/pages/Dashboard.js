@@ -1,61 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Sidebar from "../components/Sidebar";
 
+const API_BASE = "http://127.0.0.1:8000";
+
 function Dashboard() {
-  const [riskLevel, setRiskLevel] = useState("Medium");
+  const [riskLevel, setRiskLevel] = useState("Loading...");
+  const [anomalies, setAnomalies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const threatsByRisk = {
-    Low: [
-      {
-        id: 1,
-        title: "Normal System Activity",
-        description: "System behavior is within normal operational limits."
-      }
-    ],
-    Medium: [
-      {
-        id: 1,
-        title: "Suspicious Login Activity",
-        description: "Multiple failed login attempts detected from unknown locations."
-      },
-      {
-        id: 2,
-        title: "Potential Phishing Campaign",
-        description: "Unusual email patterns indicate a possible phishing attempt."
-      }
-    ],
-    High: [
-      {
-        id: 1,
-        title: "Credential Abuse Detected",
-        description: "Possible account compromise due to abnormal access behavior."
-      },
-      {
-        id: 2,
-        title: "Anomalous Transaction Behavior",
-        description: "High-risk transaction patterns detected."
-      },
-      {
-        id: 3,
-        title: "Unknown Behavior Pattern",
-        description: "Unrecognized activity may indicate a zero-day cyber threat."
-      }
-    ]
-  };
+  useEffect(() => {
+    const fetchRiskData = async () => {
+      try {
+        // Ensure model is trained
+        await axios.post(`${API_BASE}/risk/train`);
 
-  const riskScoreMap = {
-    Low: 20,
-    Medium: 55,
-    High: 85
-  };
+        // Fetch predictions
+        const response = await axios.get(`${API_BASE}/risk/predict`);
 
-  const threats = threatsByRisk[riskLevel];
-  const riskScore = riskScoreMap[riskLevel];
+        setRiskLevel(response.data.risk_level);
+        setAnomalies(response.data.anomalies);
+      } catch (error) {
+        console.error("Error fetching risk data:", error);
+        setRiskLevel("Error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRiskData();
+  }, []);
 
   const getRiskColor = () => {
     if (riskLevel === "High") return "#ff4d4d";
     if (riskLevel === "Medium") return "#ffb84d";
-    return "#4dff88";
+    if (riskLevel === "Low") return "#4dff88";
+    return "#ffffff";
   };
 
   return (
@@ -64,60 +44,57 @@ function Dashboard() {
 
       <div style={{ marginLeft: "240px", padding: "50px", minHeight: "100vh" }}>
         <h1>AI Threat Analysis Dashboard</h1>
+
         <p style={{ maxWidth: "700px" }}>
-          This module demonstrates simulated AI-based cyber threat analysis by
-          identifying abnormal behavior patterns and predicting potential cyber
-          attacks, including zero-day threats.
+          This dashboard displays real-time risk analysis based on machine
+          learning anomaly detection over login behavior data.
         </p>
 
         {/* Risk Level */}
         <div className="glass-card" style={{ marginTop: "30px" }}>
           <h2>Current System Risk Level</h2>
 
-          <p>
-            Risk Status:{" "}
-            <strong style={{ color: getRiskColor() }}>{riskLevel}</strong>
-          </p>
-
-          <p>
-            Threat Severity Score: <strong>{riskScore}%</strong>
-          </p>
-
-          <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
-            <button onClick={() => setRiskLevel("Low")}>Low Risk</button>
-            <button onClick={() => setRiskLevel("Medium")}>Medium Risk</button>
-            <button onClick={() => setRiskLevel("High")}>High Risk</button>
-          </div>
+          {loading ? (
+            <p>Analyzing system behavior...</p>
+          ) : (
+            <p>
+              Risk Status:{" "}
+              <strong style={{ color: getRiskColor() }}>{riskLevel}</strong>
+            </p>
+          )}
         </div>
 
         {/* Active Threats */}
         <div className="glass-card" style={{ marginTop: "30px" }}>
-          <h2>Active Threat Indicators</h2>
-          {threats.map((threat) => (
-            <div key={threat.id} style={{ marginBottom: "15px" }}>
-              <strong>{threat.title}</strong>
-              <p style={{ margin: "5px 0" }}>{threat.description}</p>
-            </div>
-          ))}
-        </div>
+          <h2>Detected Anomalous Activities</h2>
 
-        {/* Early Warning */}
-        <div className="glass-card" style={{ marginTop: "30px" }}>
-          <h2>Early Warning Alert</h2>
-          <p>
-            {riskLevel === "High"
-              ? "Multiple unknown behavior patterns detected. Immediate investigation is recommended. Possible zero-day attack."
-              : riskLevel === "Medium"
-              ? "Some unusual behavior detected. Continuous monitoring is advised."
-              : "System behavior is normal. No immediate cyber threats detected."}
-          </p>
+          {loading && <p>Loading threat data...</p>}
+
+          {!loading && anomalies.length === 0 && (
+            <p>No anomalous activity detected.</p>
+          )}
+
+          {!loading &&
+            anomalies.map((item, index) => (
+              <div key={index} style={{ marginBottom: "15px" }}>
+                <strong>User:</strong> {item.user_id}
+                <br />
+                <strong>Login Attempts:</strong> {item.login_attempts}
+                <br />
+                <strong>Geo Distance:</strong> {item.geo_distance} km
+                <br />
+                <strong>Device Change:</strong>{" "}
+                {item.device_change ? "Yes" : "No"}
+                <br />
+                <strong>Severity Score:</strong> {item.anomaly_score}
+              </div>
+            ))}
         </div>
 
         {/* Explanation */}
         <div style={{ marginTop: "40px", fontSize: "14px", color: "#c9d6e3" }}>
-          Note: This dashboard uses simulated data to demonstrate how AI-based
-          predictive threat detection systems work in real-world cyber security
-          environments.
+          Note: This analysis is generated using a real machine-learning-based
+          anomaly detection model trained on behavioral login data.
         </div>
       </div>
     </div>
