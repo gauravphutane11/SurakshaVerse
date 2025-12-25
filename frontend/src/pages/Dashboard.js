@@ -13,12 +13,20 @@ function Dashboard() {
 
   useEffect(() => {
     const fetchRiskData = async () => {
-      await axios.post(`${API_BASE}/risk/train`);
-      const response = await axios.get(`${API_BASE}/risk/predict`);
-      setRiskLevel(response.data.risk_level);
-      setAnomalies(response.data.anomalies);
-      setLoading(false);
+      try {
+        await axios.post(`${API_BASE}/risk/train`);
+        const response = await axios.get(`${API_BASE}/risk/predict`);
+
+        setRiskLevel(response.data.risk_level);
+        setAnomalies(response.data.anomalies);
+      } catch (error) {
+        console.error("Dashboard error:", error);
+        setRiskLevel("Error");
+      } finally {
+        setLoading(false);
+      }
     };
+
     fetchRiskData();
   }, []);
 
@@ -36,27 +44,47 @@ function Dashboard() {
     return 0;
   };
 
+  const getHeartbeatClass = () => {
+    if (riskLevel === "High") return "heartbeat high";
+    if (riskLevel === "Medium") return "heartbeat medium";
+    return "heartbeat low";
+  };
+
   return (
     <div>
       <Sidebar />
 
-      <div style={{ marginLeft: "240px", padding: "40px", minHeight: "100vh" }}>
-        <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <div
+        style={{
+          marginLeft: "240px",
+          padding: "40px",
+          minHeight: "100vh"
+        }}
+      >
+        <motion.h1
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
           AI Threat Analysis Dashboard
         </motion.h1>
 
+        {/* Risk Level */}
         <motion.div className="glass-card" style={{ marginTop: "30px" }}>
           <h2>Current System Risk Level</h2>
+
           {loading ? (
             <p>Analyzing system behavior...</p>
           ) : (
             <p>
               Risk Status:{" "}
-              <strong style={{ color: getRiskColor() }}>{riskLevel}</strong>
+              <strong style={{ color: getRiskColor() }}>
+                {riskLevel}
+              </strong>
             </p>
           )}
         </motion.div>
 
+        {/* Risk Gauge with Heartbeat */}
         <motion.div
           className="glass-card"
           style={{
@@ -66,14 +94,33 @@ function Dashboard() {
             alignItems: "center"
           }}
         >
-          <h2 style={{ marginBottom: "20px" }}>AI Risk Confidence</h2>
+          <h2
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              marginBottom: "20px"
+            }}
+          >
+            AI Risk Confidence
+            <span className={getHeartbeatClass()}></span>
+          </h2>
+
           {!loading && (
-            <RiskGauge value={getRiskValue()} level={riskLevel} />
+            <RiskGauge
+              value={getRiskValue()}
+              level={riskLevel}
+            />
           )}
         </motion.div>
 
+        {/* Detected Anomalies */}
         <motion.div className="glass-card" style={{ marginTop: "30px" }}>
           <h2>Detected Anomalous Activities</h2>
+
+          {!loading && anomalies.length === 0 && (
+            <p>No anomalous activity detected.</p>
+          )}
 
           {!loading &&
             anomalies.map((item, index) => (
@@ -101,6 +148,18 @@ function Dashboard() {
               </motion.div>
             ))}
         </motion.div>
+
+        {/* Footer */}
+        <div
+          style={{
+            marginTop: "40px",
+            fontSize: "14px",
+            color: "#c9d6e3"
+          }}
+        >
+          Note: Live animations indicate continuous monitoring. All values are
+          generated from a real ML-based threat analysis backend.
+        </div>
       </div>
     </div>
   );

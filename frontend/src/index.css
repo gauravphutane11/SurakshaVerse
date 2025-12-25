@@ -116,6 +116,62 @@ button:active {
     box-shadow: 0 0 0 0 rgba(255, 77, 77, 0);
   }
 }
+/* ===== Live Heartbeat Animation ===== */
+
+.heartbeat {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.heartbeat::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: heartbeatPulse 1.6s infinite;
+}
+
+.heartbeat.low {
+  background: #4dff88;
+}
+.heartbeat.low::before {
+  background: rgba(77, 255, 136, 0.6);
+}
+
+.heartbeat.medium {
+  background: #ffb84d;
+}
+.heartbeat.medium::before {
+  background: rgba(255, 184, 77, 0.6);
+}
+
+.heartbeat.high {
+  background: #ff4d4d;
+}
+.heartbeat.high::before {
+  background: rgba(255, 77, 77, 0.6);
+}
+
+@keyframes heartbeatPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 
 
 
