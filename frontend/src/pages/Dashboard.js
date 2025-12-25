@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
 import Sidebar from "../components/Sidebar";
+import RiskGauge from "../components/RiskGauge";
 
 const API_BASE = "http://127.0.0.1:8000";
 
@@ -11,23 +13,12 @@ function Dashboard() {
 
   useEffect(() => {
     const fetchRiskData = async () => {
-      try {
-        // Ensure model is trained
-        await axios.post(`${API_BASE}/risk/train`);
-
-        // Fetch predictions
-        const response = await axios.get(`${API_BASE}/risk/predict`);
-
-        setRiskLevel(response.data.risk_level);
-        setAnomalies(response.data.anomalies);
-      } catch (error) {
-        console.error("Error fetching risk data:", error);
-        setRiskLevel("Error");
-      } finally {
-        setLoading(false);
-      }
+      await axios.post(`${API_BASE}/risk/train`);
+      const response = await axios.get(`${API_BASE}/risk/predict`);
+      setRiskLevel(response.data.risk_level);
+      setAnomalies(response.data.anomalies);
+      setLoading(false);
     };
-
     fetchRiskData();
   }, []);
 
@@ -38,22 +29,24 @@ function Dashboard() {
     return "#ffffff";
   };
 
+  const getRiskValue = () => {
+    if (riskLevel === "High") return 85;
+    if (riskLevel === "Medium") return 55;
+    if (riskLevel === "Low") return 20;
+    return 0;
+  };
+
   return (
     <div>
       <Sidebar />
 
-      <div style={{ marginLeft: "240px", padding: "50px", minHeight: "100vh" }}>
-        <h1>AI Threat Analysis Dashboard</h1>
+      <div style={{ marginLeft: "240px", padding: "40px", minHeight: "100vh" }}>
+        <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          AI Threat Analysis Dashboard
+        </motion.h1>
 
-        <p style={{ maxWidth: "700px" }}>
-          This dashboard displays real-time risk analysis based on machine
-          learning anomaly detection over login behavior data.
-        </p>
-
-        {/* Risk Level */}
-        <div className="glass-card" style={{ marginTop: "30px" }}>
+        <motion.div className="glass-card" style={{ marginTop: "30px" }}>
           <h2>Current System Risk Level</h2>
-
           {loading ? (
             <p>Analyzing system behavior...</p>
           ) : (
@@ -62,21 +55,39 @@ function Dashboard() {
               <strong style={{ color: getRiskColor() }}>{riskLevel}</strong>
             </p>
           )}
-        </div>
+        </motion.div>
 
-        {/* Active Threats */}
-        <div className="glass-card" style={{ marginTop: "30px" }}>
-          <h2>Detected Anomalous Activities</h2>
-
-          {loading && <p>Loading threat data...</p>}
-
-          {!loading && anomalies.length === 0 && (
-            <p>No anomalous activity detected.</p>
+        <motion.div
+          className="glass-card"
+          style={{
+            marginTop: "30px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+          }}
+        >
+          <h2 style={{ marginBottom: "20px" }}>AI Risk Confidence</h2>
+          {!loading && (
+            <RiskGauge value={getRiskValue()} level={riskLevel} />
           )}
+        </motion.div>
+
+        <motion.div className="glass-card" style={{ marginTop: "30px" }}>
+          <h2>Detected Anomalous Activities</h2>
 
           {!loading &&
             anomalies.map((item, index) => (
-              <div key={index} style={{ marginBottom: "15px" }}>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: index * 0.15 }}
+                style={{
+                  marginBottom: "15px",
+                  paddingBottom: "10px",
+                  borderBottom: "1px solid rgba(255,255,255,0.08)"
+                }}
+              >
                 <strong>User:</strong> {item.user_id}
                 <br />
                 <strong>Login Attempts:</strong> {item.login_attempts}
@@ -87,15 +98,9 @@ function Dashboard() {
                 {item.device_change ? "Yes" : "No"}
                 <br />
                 <strong>Severity Score:</strong> {item.anomaly_score}
-              </div>
+              </motion.div>
             ))}
-        </div>
-
-        {/* Explanation */}
-        <div style={{ marginTop: "40px", fontSize: "14px", color: "#c9d6e3" }}>
-          Note: This analysis is generated using a real machine-learning-based
-          anomaly detection model trained on behavioral login data.
-        </div>
+        </motion.div>
       </div>
     </div>
   );
