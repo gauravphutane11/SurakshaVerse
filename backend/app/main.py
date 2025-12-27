@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import risk
 
-app = FastAPI(title="SurakshaVerse Backend")
+# Create FastAPI app FIRST
+app = FastAPI(
+    title="SurakshaVerse Backend",
+    description="NEURAL-SHIELD – AI-Based Early Warning & Cyber Threat Analysis",
+    version="1.0.0"
+)
 
+# CORS (Frontend connection)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -12,8 +17,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(risk.router)
+# Import routers AFTER app is created
+from app.api import risk
+from app.telemetry.routes import router as telemetry_router
 
+# Register routers
+app.include_router(risk.router)
+app.include_router(telemetry_router)
+
+# Root health check
 @app.get("/")
 def root():
-    return {"status": "Backend running"}
+    return {
+        "status": "Backend running",
+        "project": "SurakshaVerse / NEURAL-SHIELD",
+        "phase": "Phase 2 – Telemetry Pipeline"
+    }
