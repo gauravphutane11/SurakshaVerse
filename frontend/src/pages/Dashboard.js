@@ -1,165 +1,94 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { motion } from "framer-motion";
 import Sidebar from "../components/Sidebar";
-import RiskGauge from "../components/RiskGauge";
 
 const API_BASE = "http://127.0.0.1:8000";
 
 function Dashboard() {
-  const [riskLevel, setRiskLevel] = useState("Loading...");
-  const [anomalies, setAnomalies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchStatus = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/monitor/status`);
+      setStatus(res.data);
+    } catch (err) {
+      console.error("Failed to fetch monitoring status", err);
+    }
+  };
+
+  const runScan = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API_BASE}/monitor/update`);
+      await fetchStatus();
+    } catch (err) {
+      console.error("Scan failed", err);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchRiskData = async () => {
-      try {
-        await axios.post(`${API_BASE}/risk/train`);
-        const response = await axios.get(`${API_BASE}/risk/predict`);
-
-        setRiskLevel(response.data.risk_level);
-        setAnomalies(response.data.anomalies);
-      } catch (error) {
-        console.error("Dashboard error:", error);
-        setRiskLevel("Error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRiskData();
+    fetchStatus();
   }, []);
 
-  const getRiskColor = () => {
-    if (riskLevel === "High") return "#ff4d4d";
-    if (riskLevel === "Medium") return "#ffb84d";
-    if (riskLevel === "Low") return "#4dff88";
-    return "#ffffff";
-  };
-
-  const getRiskValue = () => {
-    if (riskLevel === "High") return 85;
-    if (riskLevel === "Medium") return 55;
-    if (riskLevel === "Low") return 20;
-    return 0;
-  };
-
-  const getHeartbeatClass = () => {
-    if (riskLevel === "High") return "heartbeat high";
-    if (riskLevel === "Medium") return "heartbeat medium";
-    return "heartbeat low";
+  const riskColor = () => {
+    if (!status) return "#aaa";
+    if (status.risk_level === "High") return "#ff4d4d";
+    if (status.risk_level === "Medium") return "#ffb84d";
+    return "#4dff88";
   };
 
   return (
     <div>
       <Sidebar />
 
-      <div
-        style={{
-          marginLeft: "240px",
-          padding: "40px",
-          minHeight: "100vh"
-        }}
-      >
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          AI Threat Analysis Dashboard
-        </motion.h1>
+      <div style={{ marginLeft: "240px", padding: "40px" }}>
+        <h1>AI Threat Analysis Dashboard</h1>
 
-        {/* Risk Level */}
-        <motion.div className="glass-card" style={{ marginTop: "30px" }}>
-          <h2>Current System Risk Level</h2>
+        {!status && <p>Loading AI risk status...</p>}
 
-          {loading ? (
-            <p>Analyzing system behavior...</p>
-          ) : (
-            <p>
-              Risk Status:{" "}
-              <strong style={{ color: getRiskColor() }}>
-                {riskLevel}
-              </strong>
-            </p>
-          )}
-        </motion.div>
+        {status && (
+          <>
+            {/* Risk Overview */}
+            <div className="glass-card" style={{ marginTop: "30px" }}>
+              <h2>System Risk Overview</h2>
 
-        {/* Risk Gauge with Heartbeat */}
-        <motion.div
-          className="glass-card"
-          style={{
-            marginTop: "30px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center"
-          }}
-        >
-          <h2
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              marginBottom: "20px"
-            }}
-          >
-            AI Risk Confidence
-            <span className={getHeartbeatClass()}></span>
-          </h2>
+              <p>
+                Risk Level:{" "}
+                <strong style={{ color: riskColor() }}>
+                  {status.risk_level}
+                </strong>
+              </p>
 
-          {!loading && (
-            <RiskGauge
-              value={getRiskValue()}
-              level={riskLevel}
-            />
-          )}
-        </motion.div>
+              <p>Threat Score: {status.risk_score} / 100</p>
+              <p>Active Anomalies: {status.active_anomalies}</p>
 
-        {/* Detected Anomalies */}
-        <motion.div className="glass-card" style={{ marginTop: "30px" }}>
-          <h2>Detected Anomalous Activities</h2>
+              <p style={{ fontSize: "12px", opacity: 0.7 }}>
+                Last Updated: {status.last_updated}
+              </p>
 
-          {!loading && anomalies.length === 0 && (
-            <p>No anomalous activity detected.</p>
-          )}
-
-          {!loading &&
-            anomalies.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: index * 0.15 }}
-                style={{
-                  marginBottom: "15px",
-                  paddingBottom: "10px",
-                  borderBottom: "1px solid rgba(255,255,255,0.08)"
-                }}
+              <button
+                onClick={runScan}
+                disabled={loading}
+                style={{ marginTop: "15px" }}
               >
-                <strong>User:</strong> {item.user_id}
-                <br />
-                <strong>Login Attempts:</strong> {item.login_attempts}
-                <br />
-                <strong>Geo Distance:</strong> {item.geo_distance} km
-                <br />
-                <strong>Device Change:</strong>{" "}
-                {item.device_change ? "Yes" : "No"}
-                <br />
-                <strong>Severity Score:</strong> {item.anomaly_score}
-              </motion.div>
-            ))}
-        </motion.div>
+                {loading ? "Scanning..." : "Run AI Scan"}
+              </button>
+            </div>
 
-        {/* Footer */}
-        <div
-          style={{
-            marginTop: "40px",
-            fontSize: "14px",
-            color: "#c9d6e3"
-          }}
-        >
-          Note: Live animations indicate continuous monitoring. All values are
-          generated from a real ML-based threat analysis backend.
-        </div>
+            {/* Explanation */}
+            <div className="glass-card" style={{ marginTop: "30px" }}>
+              <h2>How This Works</h2>
+              <p>
+                This dashboard is connected to a live backend that uses an
+                Isolation Forest model trained on normal telemetry behavior.
+                Incoming events are scored in real time, and the system risk
+                level updates dynamically based on model output.
+              </p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
