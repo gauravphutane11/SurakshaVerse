@@ -1,13 +1,12 @@
-from typing import List
-from .schema import TelemetryEvent
+# In-memory telemetry store (demo-safe)
 
-TELEMETRY_BUFFER: List[TelemetryEvent] = []
+EVENT_STORE = []
 
-def add_event(event: TelemetryEvent):
-    TELEMETRY_BUFFER.append(event)
+def save_event(event: dict):
+    EVENT_STORE.append(event)
 
-def get_recent_events(limit: int = 50):
-    return TELEMETRY_BUFFER[-limit:]
+def get_recent_events(limit: int = 20):
+    return EVENT_STORE[-limit:]
 
 def clear_events():
-    TELEMETRY_BUFFER.clear()
+    EVENT_STORE.clear()

@@ -1,18 +1,16 @@
 from fastapi import APIRouter
-from .generator import generate_event
-from .storage import get_recent_events, clear_events
+from app.telemetry.generator import generate_event
+from app.telemetry.storage import save_event, clear_events
 
 router = APIRouter(prefix="/telemetry", tags=["Telemetry"])
 
 @router.post("/generate")
 def generate_telemetry():
-    return generate_event()
+    event = generate_event()
+    save_event(event)
+    return {"status": "event generated"}
 
-@router.get("/recent")
-def recent_telemetry(limit: int = 20):
-    return get_recent_events(limit)
-
-@router.delete("/clear")
+@router.post("/clear")
 def clear_telemetry():
     clear_events()
-    return {"status": "cleared"}
+    return {"status": "telemetry cleared"}
