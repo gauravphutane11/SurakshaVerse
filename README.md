@@ -1,81 +1,153 @@
-# SurakshaVerse
-# SurakshaVerse
+# 🔐 SurakshaVerse  
+## DIPEX 2026 – Cyber Security Awareness & AI Threat Monitoring Platform
 
-SurakshaVerse is a web-based cyber security awareness and training platform that combines gamified learning with simulated AI-based cyber threat analysis. The project focuses on improving cyber awareness, response skills, and digital safety among students, citizens, and institutions.
+SurakshaVerse is a **full-stack cyber security project** developed for **DIPEX 2026** by a team of Computer Engineering students.  
+The project focuses on **cybercrime awareness, user training, and AI-based threat monitoring** using real backend logic and machine learning.
 
----
-
-## Problem Statement
-
-Cybercrime incidents such as phishing, UPI fraud, ransomware, identity theft, and emerging zero-day attacks are increasing rapidly. Most existing cyber security tools are complex, expensive, and designed only for technical experts. There is a lack of simple, interactive platforms that both demonstrate cyber threats and train users in a realistic and engaging way.
-
----
-
-## Proposed Solution
-
-SurakshaVerse provides a unified platform that allows users to experience cybercrime scenarios through interactive simulations. Users make decisions during simulated cyber attacks, receive scores and feedback, and learn correct response actions. The platform demonstrates early threat indicators and promotes proactive cyber safety behavior.
+This repository contains both:
+- **Module A** – Gamified Cybercrime Training (in progress)
+- **Module B** – AI-Based Cyber Threat Monitoring (completed & stable)
 
 ---
 
-## Key Features
+## 🎯 Project Vision
 
-- Gamified cyber security training missions
-- Simulated AI-based cyber threat detection
-- Interactive decision-based simulations
-- Score and feedback based learning
-- User-friendly and visually engaging interface
-- Safe handling of edge cases and navigation
+Most users fall victim to cyber attacks due to lack of awareness and delayed threat detection.  
+SurakshaVerse addresses this problem by combining:
 
----
+- **Learning by simulation (Module A)**
+- **Predictive, AI-driven threat monitoring (Module B)**
 
-## Project Flow
-
-1. Splash screen introduction
-2. Home screen with two modules:
-   - Gamified Training Platform
-   - AI Threat Analysis & Protection
-3. Mission selection
-4. Cyber attack simulation
-5. Result generation with score and feedback
+The goal is to provide a **safe, educational, and intelligent cyber security platform**, suitable for real-world demonstration and national-level exhibitions.
 
 ---
 
-## Technologies Used
+## 🧩 Project Modules
 
+---
+
+### 🎮 Module A – Gamified Cybercrime Training *(Under Active Development)*
+
+A scenario-based cybercrime training engine where users learn by making decisions.
+
+**Planned Features:**
+- Multi-step cybercrime scenarios (Phishing, UPI fraud, Ransomware, Identity Theft)
+- Decision-tree–based mission flow
+- Each decision affects:
+  - Next stage
+  - Final outcome
+  - User score
+- Persistent user progress tracking
+- Analytics on common mistakes
+
+**Purpose:**  
+Train users to respond correctly to real cyber incidents, not just read theory.
+
+---
+
+### 🤖 Module B – AI-Based Cyber Threat Monitoring *(Completed)*
+
+A real backend-driven AI system that detects abnormal system behavior using machine learning.
+
+**Key Capabilities:**
+- Telemetry event generation and storage
+- Anomaly detection using **Isolation Forest**
+- Real-time risk score generation (0–100)
+- Risk classification: **Low / Medium / High**
+- Live monitoring APIs
+- React dashboard with **live risk trend graph**
+
+This module uses **real ML inference**, not simulated logic.
+
+---
+
+## 🏗️ System Architecture (Module B)
+
+Telemetry Events
+↓
+Isolation Forest (ML Model)
+↓
+Threat Score (0–100)
+↓
+Risk Evaluation Engine
+↓
+Live Dashboard + Risk Trend Graph
+
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
 - React.js
-- JavaScript (ES6)
-- HTML5
-- CSS3
-- React Router
-- Framer Motion
-- Visual Studio Code
-- GitHub
+- Axios
+- Recharts (live graphs)
+- HTML5, CSS3
+
+### Backend
+- Python 3.9+
+- FastAPI
+- Uvicorn
+
+### Machine Learning
+- scikit-learn
+- Isolation Forest (Anomaly Detection)
+- NumPy, Pandas
+
+### Development Tools
+- VS Code
+- Git & GitHub
+- Virtual Environment (venv)
 
 ---
 
-## Domain
+## 📂 Project Structure (Simplified)
 
-Open Innovation (Cyber Security + Gamified Learning)
+backend/
+├── app/
+│ ├── main.py
+│ ├── telemetry/
+│ ├── monitoring/
+│ ├── ml/
+│ └── api/
+├── models/
+│ ├── isolation_forest.pkl
+│ └── scaler.pkl
+└── requirements.txt
+
+frontend/
+├── src/
+│ ├── pages/
+│ ├── components/
+│ └── assets/
+
 
 ---
 
-## Future Enhancements
+## ▶️ How to Run the Project
 
-- Integration with real-time threat data
-- Advanced AI and machine learning models
-- Multi-user and role-based access
-- Certification and assessment modules
-- Mobile application support
-- Organization-level analytics dashboard
+### 🔹 Backend Setup
 
----
+```bash
+cd backend
+venv\Scripts\activate      # Windows
+pip install -r requirements.txt
+uvicorn app.main:app --reload
 
-## Status
+Backend URL:
 
-This project is a working prototype developed for academic and innovation exhibition purposes. The current version focuses on simulation and awareness rather than real-world deployment.
+http://127.0.0.1:8000
 
----
+Swagger API Docs:
 
-## License
+http://127.0.0.1:8000/docs
 
-This project is for educational and demonstration purposes only.
+🔹 Frontend Setup
+
+cd frontend
+npm install
+npm start
+
+Frontend URL:
+
+http://localhost:3000
