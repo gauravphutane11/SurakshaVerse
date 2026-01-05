@@ -6,6 +6,7 @@ The project focuses on **cybercrime awareness, user training, and AI-based threa
 
 This repository contains both:
 - **Module A** – Gamified Cybercrime Training (in progress)
+
 - **Module B** – AI-Based Cyber Threat Monitoring (completed & stable)
 
 ---
