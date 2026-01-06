@@ -9,7 +9,7 @@ This repository contains both:
 
 - **Module B** – AI-Based Cyber Threat Monitoring (completed & stable)
 
---
+---
 
 ## 🎯 Project Vision
 
@@ -21,7 +21,7 @@ SurakshaVerse addresses this problem by combining:
 
 The goal is to provide a **safe, educational, and intelligent cyber security platform**, suitable for real-world demonstration and national-level exhibitions.
 
---
+---
 
 ## 🧩 Project Modules
 
