@@ -21,11 +21,11 @@ SurakshaVerse addresses this problem by combining:
 
 The goal is to provide a **safe, educational, and intelligent cyber security platform**, suitable for real-world demonstration and national-level exhibitions.
 
----
+--
 
 ## 🧩 Project Modules
 
----
+--
 
 ### 🎮 Module A – Gamified Cybercrime Training *(Under Active Development)*
 
