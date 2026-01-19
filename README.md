@@ -21,11 +21,9 @@ SurakshaVerse addresses this problem by combining:
 
 The goal is to provide a **safe, educational, and intelligent cyber security platform**, suitable for real-world demonstration and national-level exhibitions.
 
---
+---
 
 ## 🧩 Project Modules
-
---
 
 ### 🎮 Module A – Gamified Cybercrime Training *(Under Active Development)*
 
@@ -130,25 +128,25 @@ frontend/
 ### 🔹 Backend Setup
 
 ```bash
-cd backend
-venv\Scripts\activate      # Windows
+cd SurakshaVerse/backend
+# For Windows
+venv\Scripts\activate
+# For macOS/Linux
+# source venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
+```
 
-Backend URL:
+Backend URL: http://127.0.0.1:8000
 
-http://127.0.0.1:8000
+Swagger API Docs: http://127.0.0.1:8000/docs
 
-Swagger API Docs:
+### 🔹 Frontend Setup
 
-http://127.0.0.1:8000/docs
-
-🔹 Frontend Setup
-
-cd frontend
+```bash
+cd SurakshaVerse/frontend
 npm install
 npm start
+```
 
-Frontend URL:
-
-http://localhost:3000
+Frontend URL: http://localhost:3000
