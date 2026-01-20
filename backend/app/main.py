@@ -1,7 +1,7 @@
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.assistant.routes import router as assistant_router
 from app.telemetry.routes import router as telemetry_router
 from app.monitoring.routes import router as monitoring_router
 from app.api.risk import router as risk_router
@@ -25,6 +25,8 @@ app.add_middleware(
 app.include_router(telemetry_router)
 app.include_router(monitoring_router)
 app.include_router(risk_router)
+app.include_router(assistant_router)
+
 
 @app.get("/")
 async def root():
