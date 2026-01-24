@@ -1,10 +1,16 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.assistant.routes import router as assistant_router
 from app.telemetry.routes import router as telemetry_router
 from app.monitoring.routes import router as monitoring_router
 from app.api.risk import router as risk_router
+
+
 
 # Configure logging
 logging.basicConfig(

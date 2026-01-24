@@ -5,6 +5,8 @@ import Dashboard from "./pages/Dashboard";
 import Missions from "./pages/Missions";
 import Simulation from "./pages/Simulation";
 import Result from "./pages/Result";
+import CyberAssistant from "./components/CyberAssistant";
+
 
 function App() {
   return (
@@ -17,6 +19,7 @@ function App() {
         <Route path="/simulation" element={<Simulation />} />
         <Route path="/result" element={<Result />} />
       </Routes>
+      <CyberAssistant />
     </BrowserRouter>
   );
 }
