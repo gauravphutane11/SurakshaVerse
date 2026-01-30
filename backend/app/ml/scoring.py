@@ -9,13 +9,22 @@ MODEL_DIR = Path(__file__).resolve().parents[2] / "models"
 MODEL_PATH = MODEL_DIR / "isolation_forest.pkl"
 SCALER_PATH = MODEL_DIR / "scaler.pkl"
 
-model = joblib.load(MODEL_PATH)
-scaler = joblib.load(SCALER_PATH)
+try:
+    model = joblib.load(MODEL_PATH)
+    scaler = joblib.load(SCALER_PATH)
+except Exception as e:
+    import logging
+    logging.getLogger(__name__).error(f"Failed to load ML model or scaler: {e}")
+    model = None
+    scaler = None
 
 def score_event(event: dict) -> int:
     """
     Returns threat score (0–100)
     """
+    if model is None or scaler is None:
+        return 0 # Default to no threat if model fails to load
+
     x = np.array([[event.get(col, 0) for col in FEATURE_COLUMNS]])
     x_scaled = scaler.transform(x)
 

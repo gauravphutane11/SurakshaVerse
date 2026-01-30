@@ -68,10 +68,17 @@ class RiskModel:
             # Raw anomaly score
             df["raw_score"] = -scores
 
-            # Normalize to 0–100
+            # Normalize to 0–100 safely
             min_s = df["raw_score"].min()
             max_s = df["raw_score"].max()
-            df["anomaly_score"] = ((df["raw_score"] - min_s) / (max_s - min_s)) * 100
+            
+            if max_s - min_s > 1e-6:
+                df["anomaly_score"] = ((df["raw_score"] - min_s) / (max_s - min_s)) * 100
+            else:
+                # If all scores are the same, either all are 0 or 100. 
+                # Since Isolation Forest 'anomaly_score' is relative, 
+                # we'll default to 0 if they're all identical.
+                df["anomaly_score"] = 0.0
 
             df["anomaly"] = predictions == -1
             df["anomaly_score"] = df["anomaly_score"].round(2)
